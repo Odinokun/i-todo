@@ -1,27 +1,39 @@
 import React, {FC} from 'react';
-import {ITasks} from '../App';
+import {IFilterValues, ITasks} from '../App';
 
 interface IProps {
   title: string
   tasks: Array<ITasks>
+  deleteTask: (id: number) => void
+  changeFilter: (value: keyof IFilterValues) => void
 }
 
-export const Todolist: FC<IProps> = ({title, tasks}) => {
+export const Todolist: FC<IProps> = ({
+                                       title,
+                                       tasks,
+                                       deleteTask,
+                                       changeFilter
+                                     }) => {
+  const onAllTasksHandler = () => changeFilter('all')
+  const onActiveTasksHandler = () => changeFilter('active')
+  const onCompletedTasksHandler = () => changeFilter('completed')
+
   return (
     <div>
       <h2>{title}</h2>
 
       <div>
-        <button>All</button>
-        <button>Active</button>
-        <button>Completed</button>
+        <button onClick={onAllTasksHandler}>All</button>
+        <button onClick={onActiveTasksHandler}>Active</button>
+        <button onClick={onCompletedTasksHandler}>Completed</button>
       </div>
 
       <ul>
         {tasks.map(t => {
+          const onClickHandler = () => deleteTask(t.id)
           return (
             <li key={t.id}>
-              <button>x</button>
+              <button onClick={onClickHandler}>x</button>
               <input type="checkbox" checked={t.isDone}/>
               <span>{t.title}</span>
             </li>
