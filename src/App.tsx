@@ -1,24 +1,54 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import {Todolist} from './components/Todolist';
+
+export interface ITasks {
+  id: number
+  title: string
+  isDone: boolean
+}
+
+export interface IFilterValues {
+  all: string;
+  active: string;
+  completed: string;
+}
 
 function App() {
+  const [tasks, setTasks] = useState<ITasks[]>([
+    {id: 1, title: 'HTML', isDone: true},
+    {id: 2, title: 'Css', isDone: true},
+    {id: 3, title: 'React', isDone: true},
+    {id: 4, title: 'Redux', isDone: false},
+    {id: 5, title: 'GSAP', isDone: false},
+    {id: 6, title: 'Three.js', isDone: false},
+  ]);
+  const [filter, setFilter] = useState<keyof IFilterValues>('all');
+
+  const deleteTask = (id: number) => {
+    setTasks(tasks.filter(t => t.id !== id))
+  }
+
+  const changeFilter = (value: keyof IFilterValues) => {
+    setFilter(value);
+  }
+
+  let tasksForTodolist = tasks;
+  if (filter === 'completed') {
+    tasksForTodolist = tasks.filter(t => t.isDone)
+  }
+  if (filter === 'active') {
+    tasksForTodolist = tasks.filter(t => !t.isDone)
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Todolist
+        title="What to learn?"
+        tasks={tasksForTodolist}
+        deleteTask={deleteTask}
+        changeFilter={changeFilter}
+      />
     </div>
   );
 }
