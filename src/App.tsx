@@ -26,13 +26,17 @@ function App() {
   ]);
   const [filter, setFilter] = useState<keyof IFilterValues>('all');
 
-  const addTask = (title:string) => {
+  const addTask = (title: string) => {
     const newTask = {id: v1(), title: title, isDone: false};
     setTasks([newTask, ...tasks])
   }
 
   const removeTask = (id: string) => {
     setTasks(tasks.filter(t => t.id !== id))
+  }
+
+  const changeStatus = (taskId: string) => {
+    setTasks(tasks.map(t => t.id === taskId ? {...t, isDone: !t.isDone} : t))
   }
 
   const changeFilter = (value: keyof IFilterValues) => {
@@ -55,6 +59,8 @@ function App() {
         addTask={addTask}
         removeTask={removeTask}
         changeFilter={changeFilter}
+        changeTaskStatus={changeStatus}
+        filter={filter}
       />
     </div>
   );
