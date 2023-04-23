@@ -1,25 +1,29 @@
-import React, {ChangeEvent, KeyboardEvent, FC, useState} from 'react';
-import {IFilterValues, ITasks} from '../App';
+import { ChangeEvent, KeyboardEvent, FC, useState } from 'react';
+import { IFilterValues, ITasks } from '../App';
 
 interface IProps {
+  todolistId: string
   title: string
   tasks: Array<ITasks>
-  addTask: (title: string) => void
-  removeTask: (id: string) => void
-  changeFilter: (value: keyof IFilterValues) => void
-  changeTaskStatus: (taskId: string) => void
+  addTask: (title: string, todolistId: string) => void
+  removeTask: (id: string, todolistId: string) => void
+  changeFilter: (value: keyof IFilterValues, todolistId: string) => void
+  changeTaskStatus: (taskId: string, todolistId: string) => void
   filter: keyof IFilterValues
+  removeTodolist: (todolistId: string) => void
 }
 
 export const Todolist: FC<IProps> = ({
-                                       title,
-                                       tasks,
-                                       addTask,
-                                       removeTask,
-                                       changeFilter,
-                                       changeTaskStatus,
-                                       filter
-                                     }) => {
+  todolistId,
+  title,
+  tasks,
+  addTask,
+  removeTask,
+  changeFilter,
+  changeTaskStatus,
+  filter,
+  removeTodolist
+}) => {
   const [newTaskTitle, setNewTaskTitle] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
@@ -32,33 +36,40 @@ export const Todolist: FC<IProps> = ({
 
   const addTaskHandler = () => {
     if (newTaskTitle.trim().length > 0) {
-      addTask(newTaskTitle.trim());
+      addTask(newTaskTitle.trim(), todolistId);
       setNewTaskTitle('')
     } else {
       setError("WTF dude???")
     }
   }
 
-  const onAllTasksHandler = () => changeFilter('all')
-  const onActiveTasksHandler = () => changeFilter('active')
-  const onCompletedTasksHandler = () => changeFilter('completed')
+  const onRemoveTodolistHandler = () => {
+    removeTodolist(todolistId)
+  }
+
+  const onAllTasksHandler = () => changeFilter('all', todolistId)
+  const onActiveTasksHandler = () => changeFilter('active', todolistId)
+  const onCompletedTasksHandler = () => changeFilter('completed', todolistId)
 
   return (
     <div>
-      <h2>{title}</h2>
+      <div>
+        <button onClick={onRemoveTodolistHandler} >delete todolist</button>
+        <h2>{title}</h2>
+      </div>
 
       <div>
         <button className={filter === 'all' ? 'activeFilter' : ''}
-                onClick={onAllTasksHandler}>All
+          onClick={onAllTasksHandler}>All
         </button>
         <button className={filter === 'active' ? 'activeFilter' : ''}
-                onClick={onActiveTasksHandler}>Active
+          onClick={onActiveTasksHandler}>Active
         </button>
         <button className={filter === 'completed' ? 'activeFilter' : ''}
-                onClick={onCompletedTasksHandler}>Completed
+          onClick={onCompletedTasksHandler}>Completed
         </button>
       </div>
-      <br/>
+      <br />
 
       <div>
         <input
@@ -75,15 +86,15 @@ export const Todolist: FC<IProps> = ({
 
       <ul>
         {tasks.map(t => {
-          const onRemoveHandler = () => removeTask(t.id)
-          const onChangeStatusHandler = () => changeTaskStatus(t.id)
+          const onRemoveHandler = () => removeTask(t.id, todolistId)
+          const onChangeStatusHandler = () => changeTaskStatus(t.id, todolistId)
 
           return (
             <li className={t.isDone ? 'isDone' : ''} key={t.id}>
               <button onClick={onRemoveHandler}>x</button>
               <input type="checkbox"
-                     checked={t.isDone}
-                     onChange={onChangeStatusHandler}
+                checked={t.isDone}
+                onChange={onChangeStatusHandler}
               />
               <span>{t.title}</span>
             </li>
