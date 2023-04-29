@@ -1,6 +1,7 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { IFilterValues, ITasks } from '../App';
 import { AddItemForm } from './AddItemForm';
+import { EditableSpan } from './EditableSpan';
 
 interface IProps {
   todolistId: string;
@@ -12,6 +13,7 @@ interface IProps {
   changeTaskStatus: (todolistId: string, taskId: string) => void;
   filter: keyof IFilterValues;
   removeTodolist: (todolistId: string) => void;
+  changeTaskTitle: (todolistId: string, taskId: string, newTitle: string) => void;
 }
 
 export const Todolist: FC<IProps> = ({
@@ -24,6 +26,7 @@ export const Todolist: FC<IProps> = ({
                                        changeTaskStatus,
                                        filter,
                                        removeTodolist,
+                                       changeTaskTitle,
                                      }) => {
   const onRemoveTodolistHandler = () => {
     removeTodolist(todolistId);
@@ -43,7 +46,6 @@ export const Todolist: FC<IProps> = ({
         <button onClick={ onRemoveTodolistHandler }>delete todolist</button>
         <h2>{ title }</h2>
       </div>
-
       <div>
         <button className={ filter === 'all' ? 'activeFilter' : '' }
                 onClick={ onAllTasksHandler }>All
@@ -56,13 +58,12 @@ export const Todolist: FC<IProps> = ({
         </button>
       </div>
       <br/>
-
       <AddItemForm addItem={ addTaskHandler }/>
-
       <ul>
         { tasks.map(t => {
           const onRemoveHandler = () => removeTask(todolistId, t.id);
           const onChangeStatusHandler = () => changeTaskStatus(todolistId, t.id);
+          const onChangeTitleHandler = (value: string) => changeTaskTitle(todolistId, t.id, value);
 
           return (
             <li className={ t.isDone ? 'isDone' : '' } key={ t.id }>
@@ -71,7 +72,7 @@ export const Todolist: FC<IProps> = ({
                      checked={ t.isDone }
                      onChange={ onChangeStatusHandler }
               />
-              <span>{ t.title }</span>
+              <EditableSpan title={ t.title } onChange={ onChangeTitleHandler }/>
             </li>
           );
         }) }
