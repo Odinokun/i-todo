@@ -3,7 +3,6 @@ import { v1 } from 'uuid';
 import { Todolist } from './components/Todolist';
 import './App.css';
 import { AddItemForm } from './components/AddItemForm';
-import { log } from 'util';
 
 export interface ITasks {
   id: string;
