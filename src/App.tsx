@@ -23,6 +23,10 @@ interface ITodolist {
   filter: keyof IFilterValues;
 }
 
+interface ITasksObj {
+  [key: string]: ITasks[];
+}
+
 function App() {
   const todolistId1 = v1();
   const todolistId2 = v1();
@@ -32,7 +36,7 @@ function App() {
     {id: todolistId2, title: 'What to buy?', filter: 'all'},
   ]);
 
-  const [tasksObj, setTasksObj] = useState({
+  const [tasksObj, setTasksObj] = useState<ITasksObj>({
     [todolistId1]: [
       {id: v1(), title: 'HTML', isDone: true},
       {id: v1(), title: 'Css', isDone: true},
