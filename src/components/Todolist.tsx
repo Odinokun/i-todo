@@ -1,5 +1,6 @@
-import { ChangeEvent, KeyboardEvent, FC, useState } from 'react';
+import { FC } from 'react';
 import { IFilterValues, ITasks } from '../App';
+import { AddItemForm } from './AddItemForm';
 
 interface IProps {
   todolistId: string
@@ -14,35 +15,16 @@ interface IProps {
 }
 
 export const Todolist: FC<IProps> = ({
-  todolistId,
-  title,
-  tasks,
-  addTask,
-  removeTask,
-  changeFilter,
-  changeTaskStatus,
-  filter,
-  removeTodolist
-}) => {
-  const [newTaskTitle, setNewTaskTitle] = useState<string>('');
-  const [error, setError] = useState<string | null>(null);
-
-  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => setNewTaskTitle(e.target.value)
-
-  const onKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-    e.key === 'Enter' && addTaskHandler()
-    setError(null)
-  }
-
-  const addTaskHandler = () => {
-    if (newTaskTitle.trim().length > 0) {
-      addTask(newTaskTitle.trim(), todolistId);
-      setNewTaskTitle('')
-    } else {
-      setError("WTF dude???")
-    }
-  }
-
+                                       todolistId,
+                                       title,
+                                       tasks,
+                                       addTask,
+                                       removeTask,
+                                       changeFilter,
+                                       changeTaskStatus,
+                                       filter,
+                                       removeTodolist
+                                     }) => {
   const onRemoveTodolistHandler = () => {
     removeTodolist(todolistId)
   }
@@ -54,35 +36,24 @@ export const Todolist: FC<IProps> = ({
   return (
     <div>
       <div>
-        <button onClick={onRemoveTodolistHandler} >delete todolist</button>
+        <button onClick={onRemoveTodolistHandler}>delete todolist</button>
         <h2>{title}</h2>
       </div>
 
       <div>
         <button className={filter === 'all' ? 'activeFilter' : ''}
-          onClick={onAllTasksHandler}>All
+                onClick={onAllTasksHandler}>All
         </button>
         <button className={filter === 'active' ? 'activeFilter' : ''}
-          onClick={onActiveTasksHandler}>Active
+                onClick={onActiveTasksHandler}>Active
         </button>
         <button className={filter === 'completed' ? 'activeFilter' : ''}
-          onClick={onCompletedTasksHandler}>Completed
+                onClick={onCompletedTasksHandler}>Completed
         </button>
       </div>
-      <br />
+      <br/>
 
-      <div>
-        <input
-          type="text"
-          className={error ? 'error' : ''}
-          value={newTaskTitle}
-          placeholder="add new task"
-          onChange={onChangeHandler}
-          onKeyDown={onKeyDownHandler}
-        />
-        <button onClick={addTaskHandler}>add</button>
-        {error && <div className="error-message">{error}</div>}
-      </div>
+      <AddItemForm todolistId={todolistId} addItem={addTask}/>
 
       <ul>
         {tasks.map(t => {
@@ -93,8 +64,8 @@ export const Todolist: FC<IProps> = ({
             <li className={t.isDone ? 'isDone' : ''} key={t.id}>
               <button onClick={onRemoveHandler}>x</button>
               <input type="checkbox"
-                checked={t.isDone}
-                onChange={onChangeStatusHandler}
+                     checked={t.isDone}
+                     onChange={onChangeStatusHandler}
               />
               <span>{t.title}</span>
             </li>
