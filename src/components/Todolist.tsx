@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { IFilterValues, ITasks } from '../App';
 import { AddItemForm } from './AddItemForm';
 import { EditableSpan } from './EditableSpan';
@@ -14,6 +14,7 @@ interface IProps {
   filter: keyof IFilterValues;
   removeTodolist: (todolistId: string) => void;
   changeTaskTitle: (todolistId: string, taskId: string, newTitle: string) => void;
+  changeTodolistTitle: (todolistId: string, newTitle: string) => void;
 }
 
 export const Todolist: FC<IProps> = ({
@@ -27,24 +28,25 @@ export const Todolist: FC<IProps> = ({
                                        filter,
                                        removeTodolist,
                                        changeTaskTitle,
+                                       changeTodolistTitle,
                                      }) => {
-  const onRemoveTodolistHandler = () => {
-    removeTodolist(todolistId);
-  };
+  const onRemoveTodolistHandler = () => removeTodolist(todolistId);
+  const onChangeTodolistTitle = (newTitle: string) => changeTodolistTitle(todolistId, newTitle);
 
   const onAllTasksHandler = () => changeFilter(todolistId, 'all');
   const onActiveTasksHandler = () => changeFilter(todolistId, 'active');
   const onCompletedTasksHandler = () => changeFilter(todolistId, 'completed');
 
-  const addTaskHandler = (title: string) => {
-    addTask(todolistId, title);
-  };
+  const addTaskHandler = (title: string) => addTask(todolistId, title);
+
 
   return (
     <div>
       <div>
         <button onClick={ onRemoveTodolistHandler }>delete todolist</button>
-        <h2>{ title }</h2>
+        <h2>
+          <EditableSpan title={ title } onChange={ onChangeTodolistTitle }/>
+        </h2>
       </div>
       <div>
         <button className={ filter === 'all' ? 'activeFilter' : '' }
