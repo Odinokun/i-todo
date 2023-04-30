@@ -1,4 +1,7 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
+import { Delete, Favorite, FavoriteBorder } from '@material-ui/icons';
+import { Button, Checkbox, Grid, IconButton } from '@material-ui/core';
+
 import { IFilterValues, ITasks } from '../App';
 import { AddItemForm } from './AddItemForm';
 import { EditableSpan } from './EditableSpan';
@@ -42,43 +45,61 @@ export const Todolist: FC<IProps> = ({
 
   return (
     <div>
-      <div>
-        <button onClick={ onRemoveTodolistHandler }>delete todolist</button>
-        <h2>
+      <Grid container>
+        <h3>
           <EditableSpan title={ title } onChange={ onChangeTodolistTitle }/>
-        </h2>
-      </div>
+        </h3>
+        <IconButton onClick={ onRemoveTodolistHandler }>
+          <Delete/>
+        </IconButton>
+      </Grid>
       <div>
-        <button className={ filter === 'all' ? 'activeFilter' : '' }
-                onClick={ onAllTasksHandler }>All
-        </button>
-        <button className={ filter === 'active' ? 'activeFilter' : '' }
-                onClick={ onActiveTasksHandler }>Active
-        </button>
-        <button className={ filter === 'completed' ? 'activeFilter' : '' }
-                onClick={ onCompletedTasksHandler }>Completed
-        </button>
+        <Button
+          color="primary"
+          variant={ filter === 'all' ? 'contained' : 'outlined' }
+          onClick={ onAllTasksHandler }
+        >
+          All
+        </Button>
+        <Button
+          color="default"
+          variant={ filter === 'active' ? 'contained' : 'outlined' }
+          onClick={ onActiveTasksHandler }
+        >
+          Active
+        </Button>
+        <Button
+          color="secondary"
+          variant={ filter === 'completed' ? 'contained' : 'outlined' }
+          onClick={ onCompletedTasksHandler }
+        >
+          Completed
+        </Button>
       </div>
       <br/>
       <AddItemForm addItem={ addTaskHandler }/>
-      <ul>
-        { tasks.map(t => {
-          const onRemoveHandler = () => removeTask(todolistId, t.id);
-          const onChangeStatusHandler = () => changeTaskStatus(todolistId, t.id);
-          const onChangeTitleHandler = (value: string) => changeTaskTitle(todolistId, t.id, value);
 
-          return (
-            <li className={ t.isDone ? 'isDone' : '' } key={ t.id }>
-              <button onClick={ onRemoveHandler }>x</button>
-              <input type="checkbox"
-                     checked={ t.isDone }
-                     onChange={ onChangeStatusHandler }
-              />
-              <EditableSpan title={ t.title } onChange={ onChangeTitleHandler }/>
-            </li>
-          );
-        }) }
-      </ul>
+      { tasks.map(t => {
+        const onRemoveHandler = () => removeTask(todolistId, t.id);
+        const onChangeStatusHandler = () => changeTaskStatus(todolistId, t.id);
+        const onChangeTitleHandler = (value: string) => changeTaskTitle(todolistId, t.id, value);
+
+        return (
+          <div className={ t.isDone ? 'isDone' : '' } key={ t.id }>
+            <Checkbox
+              checked={ t.isDone }
+              color="primary"
+              onChange={ onChangeStatusHandler }
+              icon={ <FavoriteBorder/> }
+              checkedIcon={ <Favorite/> }
+            />
+            <EditableSpan title={ t.title } onChange={ onChangeTitleHandler }/>
+            <Button onClick={ onRemoveHandler }>
+              <Delete/>
+            </Button>
+          </div>
+        );
+      }) }
     </div>
   );
 };
