@@ -24,7 +24,7 @@ export interface ITodolist {
   filter: keyof IFilterValues;
 }
 
-interface ITasksObj {
+export interface ITasksObj {
   [key: string]: ITasks[];
 }
 
